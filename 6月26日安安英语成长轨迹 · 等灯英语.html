@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安安英语成长追踪 · 等灯英语</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#C8920A;--orange-lite:#FFF0D0;--orange-mid:#E8AA20;
+  --bg:#ffffff;--bg2:#f5f5f4;--bg3:#eeede9;
+  --text:#1a1a1a;--text2:#555;--text3:#888;
+  --border:#e0ddd6;--border2:#ccc;
+  --teal:#085041;--teal-bg:#E1F5EE;--teal-border:#9FE1CB;
+  --blue:#0C447C;--blue-bg:#E6F1FB;--blue-border:#B5D4F4;
+  --amber:#633806;--amber-bg:#FAEEDA;--amber-border:#FAC775;
+  --pink:#4B1528;--pink-bg:#FBEAF0;--pink-border:#F4C0D1;
+  --red:#A32D2D;--red-bg:#FCEBEB;--red-border:#F7C1C1;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1c;--bg2:#252525;--bg3:#2e2e2e;
+    --text:#f0ede6;--text2:#aaa;--text3:#666;
+    --border:#3a3a3a;--border2:#555;
+  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:var(--bg);color:var(--text);line-height:1.5}
+.app{max-width:780px;margin:0 auto;padding:1.25rem 1rem 3rem}
+.hidden{display:none!important}
+
+/* top bar */
+.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.brand-sub{font-size:12px;color:var(--text3);margin-bottom:2px}
+.brand-title{font-size:18px;font-weight:600;color:var(--text)}
+.mode-bar{display:flex;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.mode-btn{padding:6px 16px;font-size:13px;background:transparent;border:none;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:5px}
+.mode-btn.active{background:var(--orange);color:#fff;font-weight:500}
+
+/* stats */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.stat{background:var(--bg2);border-radius:var(--radius);padding:.75rem 1rem}
+.stat-l{font-size:11px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em}
+.stat-v{font-size:22px;font-weight:600;color:var(--text)}
+.stat-s{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* tabs */
+.tabs{display:flex;gap:2px;margin-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.tab{padding:7px 14px;font-size:13px;background:none;border:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:var(--text);font-weight:500;border-bottom-color:var(--orange)}
+
+/* cards */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem}
+.section-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin:.75rem 0 .5rem}
+
+/* pills */
+.pill-wrap{display:flex;flex-wrap:wrap;gap:5px;margin:.25rem 0}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--border)}
+.pill.noun{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.pill.verb{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border)}
+.pill.adj{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.pill.phrase{background:var(--pink-bg);color:var(--pink);border-color:var(--pink-border)}
+
+/* badges */
+.badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500}
+.b-new{background:var(--orange-lite);color:#7A4E00}
+.b-done{background:var(--teal-bg);color:var(--teal)}
+
+/* timeline */
+.tl{padding-left:18px;position:relative}
+.tl::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:1px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:1rem}
+.tl-dot{position:absolute;left:-16px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--orange);border:2px solid var(--bg)}
+.tl-date{font-size:12px;color:var(--text3);margin-bottom:3px}
+.tl-text{font-size:13px;color:var(--text);line-height:1.6}
+
+/* progress bars */
+.bar-wrap{margin-bottom:.75rem}
+.bar-label{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}
+.bar-label span{color:var(--text2)}
+.bar-label strong{color:var(--text)}
+.bar-bg{height:5px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:var(--orange);transition:width .5s}
+
+/* letter chips */
+.letter-row{display:flex;flex-wrap:wrap;gap:5px}
+.chip{width:30px;height:30px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;border:1px solid}
+.chip.done{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border)}
+.chip.today{background:var(--orange-lite);color:#7A4E00;border-color:var(--orange-mid)}
+.chip.pending{background:var(--bg2);color:var(--text3);border-color:var(--border)}
+
+/* quality rows */
+.q-row{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--border)}
+.q-row:last-child{border-bottom:none}
+.q-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:5px}
+.q-txt{font-size:13px;color:var(--text);line-height:1.5}
+
+/* editor */
+.editor-wrap{background:var(--bg2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:.75rem}
+.editor-wrap h2{font-size:15px;font-weight:600;margin-bottom:1rem;color:var(--text)}
+.field-group{margin-bottom:.875rem}
+.field-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px}
+.field-group input,.field-group textarea,.field-group select{
+  width:100%;padding:7px 10px;font-size:13px;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  background:var(--bg);color:var(--text);font-family:inherit
+}
+.field-group textarea{resize:vertical;min-height:72px;line-height:1.5}
+.field-hint{font-size:11px;color:var(--text3);margin-top:3px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:1rem}
+.btn{padding:7px 16px;font-size:13px;border-radius:var(--radius);cursor:pointer;font-weight:500;border:none;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:#A67208}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--bg2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.save-msg{font-size:12px;color:var(--text3)}
+
+/* lesson list */
+.lesson-list-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;background:var(--bg)}
+.lesson-list-item span{font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px}
+.lil-btns{display:flex;gap:6px}
+
+/* login */
+.login-wrap{display:flex;flex-direction:column;align-items:center;padding:3rem 1rem;gap:1rem}
+.login-wrap h2{font-size:16px;font-weight:600;color:var(--text)}
+.login-wrap input{width:220px;padding:8px 12px;font-size:14px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);text-align:center;letter-spacing:2px}
+.login-err{font-size:12px;color:var(--red)}
+
+/* legend */
+.legend{display:flex;gap:14px;margin-top:.75rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3)}
+.legend-dot{width:10px;height:10px;border-radius:2px;border:1px solid}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="top-bar">
+    <div>
+      <div class="brand-sub">等灯英语 · 安安</div>
+      <div class="brand-title">英语成长追踪</div>
+    </div>
+    <div class="mode-bar">
+      <button class="mode-btn active" onclick="setMode('view')"><i class="ti ti-eye"></i> 展示</button>
+      <button class="mode-btn" onclick="setMode('login')"><i class="ti ti-edit"></i> 编辑</button>
+    </div>
+  </div>
+
+  <!-- VIEW -->
+  <div id="view-mode">
+    <div id="view-stats" class="stat-row"></div>
+    <div class="tabs" id="view-tabs">
+      <button class="tab active" onclick="viewTab('plan')">课程计划</button>
+      <button class="tab" onclick="viewTab('vocab')">词汇</button>
+      <button class="tab" onclick="viewTab('sentences')">句型</button>
+      <button class="tab" onclick="viewTab('quality')">品质</button>
+    </div>
+    <div id="vtab-plan"></div>
+    <div id="vtab-vocab" class="hidden"></div>
+    <div id="vtab-sentences" class="hidden"></div>
+    <div id="vtab-quality" class="hidden"></div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login-mode" class="hidden">
+    <div class="login-wrap">
+      <i class="ti ti-lock" style="font-size:28px;color:var(--text3)"></i>
+      <h2>编辑后台</h2>
+      <input type="password" id="pw-input" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn btn-primary" onclick="doLogin()">进入</button>
+      <span class="login-err hidden" id="login-err">密码不正确</span>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div id="editor-mode" class="hidden">
+    <div class="tabs" id="editor-tabs">
+      <button class="tab active" onclick="edTab('lessons')">课次管理</button>
+      <button class="tab" onclick="edTab('letters')">字母进度</button>
+      <button class="tab" onclick="edTab('settings')">设置</button>
+    </div>
+
+    <div id="etab-lessons">
+      <div id="lesson-list-ui"></div>
+      <button class="btn btn-primary" onclick="openAddLesson()" style="margin-bottom:1rem">
+        <i class="ti ti-plus"></i> 新增课次
+      </button>
+      <div id="lesson-form" class="editor-wrap hidden">
+        <h2 id="form-title">新增课次</h2>
+        <input type="hidden" id="f-idx">
+        <div class="field-group">
+          <label>日期 &amp; 课次编号</label>
+          <input type="text" id="f-date" placeholder="如：2026.6.25 课七">
+        </div>
+        <div class="field-group">
+          <label>状态</label>
+          <select id="f-status">
+            <option value="plan">计划中（课前）</option>
+            <option value="done">已完成（课后）</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>新学内容</label>
+          <input type="text" id="f-new" placeholder="如：字母 Ee / Gg · 句型 That is">
+        </div>
+        <div class="field-group">
+          <label>复习内容</label>
+          <input type="text" id="f-review" placeholder="如：字母 B/C/D/F · 句型 This is">
+        </div>
+        <div class="field-group">
+          <label>绘本</label>
+          <input type="text" id="f-books" placeholder="如：《Goal!》《What's That?》">
+        </div>
+        <div class="field-group">
+          <label>名词词汇（逗号分隔）</label>
+          <textarea id="f-noun" placeholder="fan, fork, fish, bucket, balloon"></textarea>
+        </div>
+        <div class="field-group">
+          <label>动词词汇（逗号分隔）</label>
+          <textarea id="f-verb" placeholder="kick, bounce, rescue, drop"></textarea>
+        </div>
+        <div class="field-group">
+          <label>形容词词汇（逗号分隔）</label>
+          <textarea id="f-adj" placeholder="mysterious, powerful, broken"></textarea>
+        </div>
+        <div class="field-group">
+          <label>短语 / 特殊表达（逗号分隔）</label>
+          <textarea id="f-phrase" placeholder="hide and seek, paper pig not Peppa Pig"></textarea>
+        </div>
+        <div class="field-group">
+          <label>安安主动输出的句子（每句一行）</label>
+          <textarea id="f-output" placeholder="Why do you do this to me?&#10;Let's play hide and seek"></textarea>
+          <div class="field-hint">课后填写，课前可留空</div>
+        </div>
+        <div class="field-group">
+          <label>能跟读的句子（每句一行）</label>
+          <textarea id="f-echo" placeholder="Can you pass me the water?"></textarea>
+        </div>
+        <div class="field-group">
+          <label>品质成长表现（每条一行）</label>
+          <textarea id="f-quality" placeholder="主动发起游戏，社交互动意愿强&#10;有语言幽默感"></textarea>
+        </div>
+        <div class="field-group">
+          <label>课堂笔记</label>
+          <textarea id="f-notes" placeholder="给自己的补充说明，家长不会看到这里"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveLesson()"><i class="ti ti-check"></i> 保存课次</button>
+          <button class="btn btn-ghost" onclick="cancelForm()">取消</button>
+          <span class="save-msg" id="lesson-save-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="etab-letters" class="hidden">
+      <div class="editor-wrap">
+        <h2>字母掌握进度</h2>
+        <div class="field-hint" style="margin-bottom:1rem">点击切换：待学 → 本周新学 → 已掌握 → 待学</div>
+        <div id="letter-editor-chips" class="letter-row" style="gap:8px"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveLetters()"><i class="ti ti-check"></i> 保存</button>
+          <span class="save-msg" id="letter-save-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="etab-settings" class="hidden">
+      <div class="editor-wrap">
+        <h2>修改密码</h2>
+        <div class="field-group"><label>当前密码</label><input type="password" id="pw-old"></div>
+        <div class="field-group"><label>新密码（至少4位）</label><input type="password" id="pw-new"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="changePw()">保存新密码</button>
+          <span class="save-msg" id="pw-msg"></span>
+        </div>
+      </div>
+      <div class="editor-wrap">
+        <h2>退出编辑</h2>
+        <button class="btn btn-ghost" onclick="logout()"><i class="ti ti-logout"></i> 退出后台</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ALPHA='AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'.match(/../g);
+const DEFAULT_PW='dengdeng2026';
+
+const DEFAULT_LESSONS=[
+  {date:'2026.6.9 课四',status:'done',newContent:'字母 Cc · 句型 I can',review:'字母 t/a/s/p/b',books:'《Pop》',
+   noun:'lollipop,popcorn,water bottle,turtle,peacock,pillow,lid,pan',
+   verb:'chew,drink water,feed,kick,twist,pop up',adj:'empty,thirsty,sharp',
+   phrase:"air pressure,let's play the peacock game",
+   output:"I like dogs\nI don't like turtles\nI can kick\nThis is pink\nIt's in my right hand",
+   echo:'Please give it to me\nGive it back to me',
+   quality:"给玩偶细心做枕头、盖被子，展现同理心\n主动提议开始上课，学习主动性强\n能完成实物与卡片的逻辑归类",notes:''},
+  {date:'2026.6.16 课五',status:'done',newContent:'字母 Dd 形容词 · 节日词汇',review:'字母 A/B/C/S/T',books:'',
+   noun:'zongzi,dragon boat,trampoline,cone,spoon,castle,sword',
+   verb:'row a boat,bounce,spray,dance,eat',adj:'dull,dangerous,yummy,boring,colorful',
+   phrase:'thunder lightning,Dragon Boat Festival,first second third fourth',
+   output:"This is a red cone\nWhich cone is pink? This is pink\nAre you scared? No I am okay",
+   echo:"Is it your feet? Yes it's my feet\nI am tired\nCan you help me to hang this up",
+   quality:"能表达喜好与厌恶，体现强烈学习主动性\n临走主动把橘子作为礼物送给老师\n有引导时会说礼貌用语 please",notes:''},
+  {date:'2026.6.23 课六',status:'done',newContent:'字母 Ff 发音与形状',review:'字母 B/C/D · 句型 This is / It is',books:"《Stuck》《Daddy's Present》",
+   noun:'fan,fork,fish,farm,bucket,balloon,towel,castle,tow truck,fence,pencil',
+   verb:'kick,drop down,rescue,bounce,hold up,dance,spray',
+   adj:'mysterious,powerful,broken,dangerous,dull,pink,black',
+   phrase:'hide and seek,paper pig not Peppa Pig,air pressure,first second third fourth',
+   output:"Why do you do this to me?\nLet's play hide and seek\nIt's paper pig, not Peppa Pig\nBig earthquake, small earthquake\nI want to drink water\nCan you help me to hold this up?\nIt is broken\nI have a tow truck",
+   echo:"Can you pass me the water?\nI want to see this\nThis is how fish bounce",
+   quality:"说出 It's paper pig, not Peppa Pig，主动纠错，有语言幽默感\n自发说 Big earthquake, small earthquake，把 big/small 迁移到新场景\n主动发起 Let's play hide and seek，社交互动发起能力出现",notes:''},
+  {date:'2026.6.25 课七',status:'plan',newContent:'字母 Ee / Gg · 句型 That is',review:'字母 B/C/D/F · 句型 This is',books:"《Goal!》《What's That?》",
+   noun:'',verb:'',adj:'',phrase:'',output:'',echo:'',quality:'',notes:''}
+];
+
+const DEFAULT_LETTERS={
+  Aa:'done',Bb:'done',Cc:'done',Dd:'done',Ee:'today',Ff:'done',Gg:'today',
+  Hh:'pending',Ii:'pending',Jj:'pending',Kk:'pending',Ll:'pending',Mm:'pending',
+  Nn:'pending',Oo:'pending',Pp:'pending',Qq:'pending',Rr:'pending',Ss:'done',
+  Tt:'done',Uu:'pending',Vv:'pending',Ww:'pending',Xx:'pending',Yy:'pending',Zz:'pending'
+};
+
+let state={lessons:[...DEFAULT_LESSONS],letters:{...DEFAULT_LETTERS},pw:DEFAULT_PW};
+let loggedIn=false;
+
+function save(){
+  try{localStorage.setItem('anan-tracker',JSON.stringify(state));}catch(e){}
+}
+function load(){
+  try{const d=localStorage.getItem('anan-tracker');if(d)Object.assign(state,JSON.parse(d));}catch(e){}
+  renderAll();
+}
+
+function setMode(m){
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',['view','login'][i]===m));
+  show('view-mode',m==='view');
+  if(m==='login'&&loggedIn){show('editor-mode',true);show('login-mode',false);}
+  else{show('login-mode',m==='login'&&!loggedIn);show('editor-mode',m==='login'&&loggedIn);}
+  if(m==='view')renderView();
+}
+function show(id,v){document.getElementById(id).classList.toggle('hidden',!v);}
+
+function doLogin(){
+  if(document.getElementById('pw-input').value===state.pw){
+    loggedIn=true;show('login-mode',false);show('editor-mode',true);
+    document.getElementById('pw-input').value='';renderEditor();
+  }else{document.getElementById('login-err').classList.remove('hidden');}
+}
+function logout(){loggedIn=false;setMode('view');}
+
+function viewTab(name){
+  ['plan','vocab','sentences','quality'].forEach(n=>{show('vtab-'+n,n===name);});
+  document.querySelectorAll('#view-tabs .tab').forEach((t,i)=>t.classList.toggle('active',['plan','vocab','sentences','quality'][i]===name));
+}
+function edTab(name){
+  ['lessons','letters','settings'].forEach(n=>show('etab-'+n,n===name));
+  document.querySelectorAll('#editor-tabs .tab').forEach((t,i)=>t.classList.toggle('active',['lessons','letters','settings'][i]===name));
+}
+
+const sp=t=>t?t.split(',').map(s=>s.trim()).filter(Boolean):[];
+const ln=t=>t?t.split('\n').map(s=>s.trim()).filter(Boolean):[];
+const pills=(ws,c)=>ws.map(w=>`<span class="pill ${c}">${w}</span>`).join('');
+
+function renderView(){
+  const done=state.lessons.filter(l=>l.status==='done');
+  const plan=state.lessons.filter(l=>l.status==='plan');
+  const nouns=[...new Set(done.flatMap(l=>sp(l.noun)))];
+  const verbs=[...new Set(done.flatMap(l=>sp(l.verb)))];
+  const doneL=Object.values(state.letters).filter(v=>v==='done').length;
+
+  document.getElementById('view-stats').innerHTML=`
+    <div class="stat"><div class="stat-l">已完成课次</div><div class="stat-v">${done.length}</div></div>
+    <div class="stat"><div class="stat-l">字母已学</div><div class="stat-v">${doneL}</div><div class="stat-s">/26</div></div>
+    <div class="stat"><div class="stat-l">词汇积累</div><div class="stat-v">${nouns.length+verbs.length}+</div></div>`;
+
+  // plan tab
+  let ph='';
+  [...plan].reverse().forEach(l=>{
+    ph+=`<div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <strong style="font-size:14px">${l.date}</strong><span class="badge b-new">计划中</span>
+      </div>
+      ${l.newContent?`<div style="font-size:13px;margin-bottom:4px"><strong>新学：</strong>${l.newContent}</div>`:''}
+      ${l.review?`<div style="font-size:13px;margin-bottom:4px"><strong>复习：</strong>${l.review}</div>`:''}
+      ${l.books?`<div style="font-size:13px;color:var(--text2)"><i class="ti ti-book"></i> ${l.books}</div>`:''}
+      ${l.notes?`<div style="font-size:12px;color:var(--text3);margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)">${l.notes}</div>`:''}
+    </div>`;
+  });
+  const ld=done[done.length-1];
+  if(ld){
+    const all=[...sp(ld.noun),...sp(ld.verb),...sp(ld.adj),...sp(ld.phrase)];
+    ph+=`<div class="section-label">上节课回顾 · ${ld.date}</div>
+    <div class="card">
+      <div class="pill-wrap">${pills(sp(ld.noun),'noun')}${pills(sp(ld.verb),'verb')}${pills(sp(ld.adj),'adj')}${pills(sp(ld.phrase),'phrase')}</div>
+      ${ln(ld.output).length?`<div class="section-label">安安说出的句子</div>${ln(ld.output).map(s=>`<div class="q-row"><div class="q-dot"></div><div class="q-txt">${s}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  document.getElementById('vtab-plan').innerHTML=ph||'<div style="color:var(--text3);padding:1rem 0;font-size:13px">暂无计划课次</div>';
+
+  // vocab tab
+  let vh=`<div class="section-label">字母进度</div><div class="letter-row">`;
+  ALPHA.forEach(l=>{vh+=`<div class="chip ${state.letters[l]||'pending'}">${l}</div>`;});
+  vh+=`</div><div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--teal-bg);border-color:var(--teal-border)"></div>已掌握</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange-lite);border-color:var(--orange-mid)"></div>本周新学</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--bg2);border-color:var(--border)"></div>待学</div>
+  </div>
+  <div class="section-label" style="margin-top:1.25rem">词汇类型</div>
+  <div class="bar-wrap"><div class="bar-label"><span>名词</span><strong>${nouns.length} 词</strong></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,nouns.length/2.5)}%"></div></div></div>
+  <div class="bar-wrap"><div class="bar-label"><span>动词</span><strong>${verbs.length} 词</strong></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,verbs.length*1.5)}%;background:#0F6E56"></div></div></div>
+  <div class="section-label" style="margin-top:1.25rem">词汇时间线</div><div class="tl">`;
+  [...done].reverse().forEach(l=>{
+    const all=[...sp(l.noun),...sp(l.verb),...sp(l.adj),...sp(l.phrase)];
+    if(all.length)vh+=`<div class="tl-item"><div class="tl-dot"></div><div class="tl-date">${l.date}</div><div class="tl-text">${all.join(' · ')}</div></div>`;
+  });
+  vh+='</div>';
+  document.getElementById('vtab-vocab').innerHTML=vh;
+
+  // sentences tab
+  let sh='<div class="tl">';
+  [...done].reverse().forEach(l=>{
+    const out=ln(l.output),echo=ln(l.echo);
+    if(!out.length&&!echo.length)return;
+    sh+=`<div class="tl-item"><div class="tl-dot"></div><div class="tl-date">${l.date}</div><div class="tl-text">`;
+    if(out.length)sh+=`<strong>主动说：</strong>${out.map(s=>`"${s}"`).join(' &nbsp;·&nbsp; ')}<br>`;
+    if(echo.length)sh+=`<span style="color:var(--text2)">跟读：${echo.join(' · ')}</span>`;
+    sh+='</div></div>';
+  });
+  sh+='</div>';
+  document.getElementById('vtab-sentences').innerHTML=sh;
+
+  // quality tab
+  let qh='<div class="tl">';
+  [...done].reverse().forEach(l=>{
+    const qs=ln(l.quality);
+    if(!qs.length)return;
+    qh+=`<div class="tl-item"><div class="tl-dot"></div><div class="tl-date">${l.date}</div>`;
+    qh+=qs.map(q=>`<div class="q-row"><div class="q-dot"></div><div class="q-txt">${q}</div></div>`).join('');
+    qh+='</div>';
+  });
+  qh+='</div>';
+  document.getElementById('vtab-quality').innerHTML=qh;
+}
+
+function renderEditor(){
+  let h='';
+  state.lessons.forEach((l,i)=>{
+    h+=`<div class="lesson-list-item">
+      <span>${l.date} <span class="badge ${l.status==='plan'?'b-new':'b-done'}">${l.status==='plan'?'计划':'完成'}</span></span>
+      <div class="lil-btns">
+        <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="editLesson(${i})"><i class="ti ti-edit"></i></button>
+        <button class="btn btn-danger" style="padding:4px 10px;font-size:12px" onclick="deleteLesson(${i})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('lesson-list-ui').innerHTML=h;
+
+  let lh='';
+  ALPHA.forEach(l=>{
+    const s=state.letters[l]||'pending';
+    lh+=`<div class="chip ${s}" style="cursor:pointer;width:36px;height:36px;font-size:13px" onclick="cycleLetter('${l}')">${l}</div>`;
+  });
+  document.getElementById('letter-editor-chips').innerHTML=lh;
+}
+
+function renderAll(){renderView();}
+
+function openAddLesson(){
+  document.getElementById('form-title').textContent='新增课次';
+  ['date','new','review','books','noun','verb','adj','phrase','output','echo','quality','notes'].forEach(k=>document.getElementById('f-'+k).value='');
+  document.getElementById('f-status').value='plan';
+  document.getElementById('f-idx').value='';
+  document.getElementById('lesson-form').classList.remove('hidden');
+  document.getElementById('lesson-save-msg').textContent='';
+}
+
+function editLesson(i){
+  const l=state.lessons[i];
+  document.getElementById('form-title').textContent='编辑课次';
+  document.getElementById('f-idx').value=i;
+  document.getElementById('f-date').value=l.date||'';
+  document.getElementById('f-status').value=l.status||'plan';
+  document.getElementById('f-new').value=l.newContent||'';
+  document.getElementById('f-review').value=l.review||'';
+  document.getElementById('f-books').value=l.books||'';
+  ['noun','verb','adj','phrase','output','echo','quality','notes'].forEach(k=>document.getElementById('f-'+k).value=l[k]||'');
+  document.getElementById('lesson-form').classList.remove('hidden');
+  document.getElementById('lesson-save-msg').textContent='';
+}
+
+function cancelForm(){document.getElementById('lesson-form').classList.add('hidden');}
+
+function saveLesson(){
+  const idx=document.getElementById('f-idx').value;
+  const l={
+    date:document.getElementById('f-date').value.trim(),
+    status:document.getElementById('f-status').value,
+    newContent:document.getElementById('f-new').value.trim(),
+    review:document.getElementById('f-review').value.trim(),
+    books:document.getElementById('f-books').value.trim(),
+    noun:document.getElementById('f-noun').value.trim(),
+    verb:document.getElementById('f-verb').value.trim(),
+    adj:document.getElementById('f-adj').value.trim(),
+    phrase:document.getElementById('f-phrase').value.trim(),
+    output:document.getElementById('f-output').value.trim(),
+    echo:document.getElementById('f-echo').value.trim(),
+    quality:document.getElementById('f-quality').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+  };
+  if(!l.date){alert('请填写日期和课次编号');return;}
+  if(idx==='')state.lessons.push(l);
+  else state.lessons[parseInt(idx)]=l;
+  save();
+  document.getElementById('lesson-form').classList.add('hidden');
+  document.getElementById('lesson-save-msg').textContent='已保存 ✓';
+  renderEditor();renderView();
+}
+
+function deleteLesson(i){
+  if(!confirm('确认删除这节课的记录？'))return;
+  state.lessons.splice(i,1);save();renderEditor();renderView();
+}
+
+function cycleLetter(l){
+  const s=['pending','today','done'];
+  state.letters[l]=s[(s.indexOf(state.letters[l]||'pending')+1)%3];
+  renderEditor();
+}
+
+function saveLetters(){
+  save();
+  document.getElementById('letter-save-msg').textContent='已保存 ✓';
+  renderView();
+  setTimeout(()=>document.getElementById('letter-save-msg').textContent='',2000);
+}
+
+function changePw(){
+  const old=document.getElementById('pw-old').value;
+  const nw=document.getElementById('pw-new').value;
+  const msg=document.getElementById('pw-msg');
+  if(old!==state.pw){msg.textContent='当前密码不正确';return;}
+  if(nw.length<4){msg.textContent='新密码至少4位';return;}
+  state.pw=nw;save();msg.textContent='密码已更新 ✓';
+  document.getElementById('pw-old').value='';document.getElementById('pw-new').value='';
+}
+
+load();
+</script>
+</body>
+</html>
